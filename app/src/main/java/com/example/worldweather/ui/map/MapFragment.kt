@@ -15,6 +15,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.example.worldweather.R
 import com.example.worldweather.databinding.MapFragmentBinding
+import com.example.worldweather.ui.ShareViewModel
 import com.example.worldweather.utils.REQUEST_LOCATION_PERMISSION
 import com.example.worldweather.utils.TEHRAN_LAT_LNG
 import com.example.worldweather.utils.bases.BaseFragment
@@ -22,6 +23,7 @@ import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.awaitAll
 
 
 @AndroidEntryPoint
@@ -29,10 +31,10 @@ class MapFragment : BaseFragment<MapFragmentBinding, MapViewModel>(R.layout.map_
 
     private lateinit var map: GoogleMap
     override val viewModel: MapViewModel by viewModels()
-
-
+    lateinit var sharedViewModel: ShareViewModel
 
     override fun init() {
+        sharedViewModel = ViewModelProvider(requireActivity()).get(ShareViewModel::class.java)
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync { map ->
             this.map = map
@@ -45,22 +47,24 @@ class MapFragment : BaseFragment<MapFragmentBinding, MapViewModel>(R.layout.map_
                     R.raw.beauty_map
                 )
             )
+            viewModel.getWeather()
             map.setOnCameraIdleListener {
                 val centerLocation = map.cameraPosition.target
-                viewModel.lat.observe(viewLifecycleOwner, Observer {
-                    centerLocation.latitude
-                })
-                viewModel.lon.observe(viewLifecycleOwner,{
-                    centerLocation.longitude
-                })
+                viewModel.updateLat(centerLocation.latitude.toString())
+                viewModel.updateLon(centerLocation.longitude.toString())
+                viewModel.getWeather()
             }
-            viewModel.getWeather()
         }
-
-
 
     }
 
+    override fun observedLiveData() {
+        viewModel.weatherResp.observe(viewLifecycleOwner){
+            sharedViewModel.getWeather(it)
+        }
+    }
+
+    /* Map Func */
 
     private fun isPermissionGranted(): Boolean {
         return ContextCompat.checkSelfPermission(
@@ -92,5 +96,7 @@ class MapFragment : BaseFragment<MapFragmentBinding, MapViewModel>(R.layout.map_
             )
         }
     }
+
+    /* Map Func */
 }
 

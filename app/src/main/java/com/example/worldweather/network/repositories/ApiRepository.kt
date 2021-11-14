@@ -11,6 +11,6 @@ import javax.inject.Inject
 class ApiRepository @Inject constructor(private val apiService: ApiService) : iApiRepository {
     override suspend fun getWeather(request: WeatherRequest): WeatherResponse =
         withContext(Dispatchers.IO){
-            return@withContext apiService.getWeather(request)
+            return@withContext apiService.getWeather(request.latitude.toString(),request.longitude.toString())
         }
 }

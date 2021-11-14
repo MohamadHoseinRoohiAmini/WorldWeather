@@ -9,8 +9,18 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class BaseViewModel @Inject constructor() : ViewModel() {
-    var lat = MutableLiveData<String>(TEHRAN_LAT_LNG.latitude.toString())
-    var lon = MutableLiveData<String>(TEHRAN_LAT_LNG.longitude.toString())
-    val weatherResponse = MutableLiveData<WeatherResponse>()
+    val lat = MutableLiveData<String>()
+    val lon = MutableLiveData<String>()
+    fun setLatLonTehran(){
+        lat.value = TEHRAN_LAT_LNG.latitude.toString()
+        lon.value = TEHRAN_LAT_LNG.longitude.toString()
+    }
+    fun updateLat(newLat: String){
+        lat.value = newLat
+    }
+    fun updateLon(newLon: String){
+        lon.value = newLon
+    }
+
 
 }

@@ -10,10 +10,7 @@ import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.fragment.app.Fragment
-import androidx.viewbinding.ViewBinding
 import com.example.worldweather.BR
-import com.example.worldweather.databinding.WeatherFragmentBinding
-import dagger.hilt.android.AndroidEntryPoint
 
 abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel>(@LayoutRes private val layoutRecourceId: Int) :
     Fragment() {
@@ -33,6 +30,7 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel>(@LayoutRes 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.lifecycleOwner = viewLifecycleOwner
         binding.setVariable(BR.viewModel, viewModel)
+        viewModel.setLatLonTehran()
         init()
         observedLiveData()
     }
