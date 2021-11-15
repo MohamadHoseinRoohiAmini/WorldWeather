@@ -2,7 +2,6 @@ package com.example.worldweather.utils.bases
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.worldweather.network.datamodel.WeatherResponse
 import com.example.worldweather.utils.TEHRAN_LAT_LNG
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -21,6 +20,4 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
     fun updateLon(newLon: String){
         lon.value = newLon
     }
-
-
 }

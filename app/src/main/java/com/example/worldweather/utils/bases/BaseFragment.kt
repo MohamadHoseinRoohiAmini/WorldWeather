@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.CallSuper
 import androidx.annotation.LayoutRes
 import androidx.databinding.DataBindingUtil
@@ -40,8 +39,4 @@ abstract class BaseFragment<B : ViewDataBinding, VM : BaseViewModel>(@LayoutRes 
     open fun observedLiveData() {
 
     }
-
-    fun showMessage(msg: String) {
-        Toast.makeText(requireContext(), msg, Toast.LENGTH_SHORT).show()
     }
-}

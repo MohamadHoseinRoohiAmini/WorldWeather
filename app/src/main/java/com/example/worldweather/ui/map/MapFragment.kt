@@ -3,16 +3,9 @@ package com.example.worldweather.ui.map
 import android.Manifest
 import android.content.pm.PackageManager
 import androidx.lifecycle.ViewModelProvider
-import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.example.worldweather.R
 import com.example.worldweather.databinding.MapFragmentBinding
 import com.example.worldweather.ui.ShareViewModel
@@ -20,10 +13,8 @@ import com.example.worldweather.utils.REQUEST_LOCATION_PERMISSION
 import com.example.worldweather.utils.TEHRAN_LAT_LNG
 import com.example.worldweather.utils.bases.BaseFragment
 import com.google.android.gms.maps.*
-import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MapStyleOptions
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.awaitAll
 
 
 @AndroidEntryPoint
@@ -31,10 +22,11 @@ class MapFragment : BaseFragment<MapFragmentBinding, MapViewModel>(R.layout.map_
 
     private lateinit var map: GoogleMap
     override val viewModel: MapViewModel by viewModels()
-    lateinit var sharedViewModel: ShareViewModel
+    private lateinit var sharedViewModel: ShareViewModel
 
     override fun init() {
-        sharedViewModel = ViewModelProvider(requireActivity()).get(ShareViewModel::class.java)
+        viewModel.getWeather()
+        sharedViewModel = ViewModelProvider(requireActivity())[ShareViewModel::class.java]
         val mapFragment = childFragmentManager.findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync { map ->
             this.map = map
@@ -47,7 +39,7 @@ class MapFragment : BaseFragment<MapFragmentBinding, MapViewModel>(R.layout.map_
                     R.raw.beauty_map
                 )
             )
-            viewModel.getWeather()
+
             map.setOnCameraIdleListener {
                 val centerLocation = map.cameraPosition.target
                 viewModel.updateLat(centerLocation.latitude.toString())
@@ -91,7 +83,7 @@ class MapFragment : BaseFragment<MapFragmentBinding, MapViewModel>(R.layout.map_
         } else {
             ActivityCompat.requestPermissions(
                 requireActivity(),
-                arrayOf<String>(Manifest.permission.ACCESS_FINE_LOCATION),
+                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 REQUEST_LOCATION_PERMISSION
             )
         }

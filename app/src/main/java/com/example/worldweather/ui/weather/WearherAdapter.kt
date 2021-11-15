@@ -1,15 +1,16 @@
 package com.example.worldweather.ui.weather
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.worldweather.R
 import com.example.worldweather.databinding.ItemDailyBinding
 import com.example.worldweather.network.datamodel.Daily
-import java.util.zip.Inflater
+import com.example.worldweather.utils.kelvinToCel
+import java.text.SimpleDateFormat
+import java.util.*
 
-class WeatherAdapter(private val dailyList: List<Daily>, private val context: Context) :
+class WeatherAdapter(private val dailyList: List<Daily>) :
     RecyclerView.Adapter<WeatherAdapter.weatherViewHolder>() {
 
 
@@ -31,8 +32,8 @@ class WeatherAdapter(private val dailyList: List<Daily>, private val context: Co
                 else -> it.imgType.setImageResource(R.drawable.sunny)
             }
             it.tvType.text = item.weather?.first()?.main
-            it.tvCelsius.text = item.temp?.day.toString()
-            it.tvDate.text = item.dt.toString()
+            it.tvCelsius.text = Int.kelvinToCel(item.temp?.day).toString() + "C"
+            it.tvDate.text = getDateTime(item.dt.toString())
         }
 
     }
@@ -43,4 +44,13 @@ class WeatherAdapter(private val dailyList: List<Daily>, private val context: Co
 
     class weatherViewHolder(val binding: ItemDailyBinding) : RecyclerView.ViewHolder(binding.root)
 
+}
+fun getDateTime(s: String): String? {
+    return try {
+        val sdf = SimpleDateFormat("MM/dd/yyyy")
+        val netDate = Date(s.toLong() * 1000)
+        sdf.format(netDate)
+    } catch (e: Exception) {
+        e.toString()
+    }
 }
